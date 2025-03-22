@@ -1,0 +1,9 @@
+[assets]
+fonts_dir = [""]
+templates_dir = ""
+
+[server]
+host = "localhost"
+port = 8000
+
+
