@@ -12,7 +12,7 @@ def main():
 
     docgen = DocGen(config.assets.templates_dir, config.assets.fonts_dir)
     server = FastAPI()
-    service = DocGenService(server, docgen)
+    service = DocGenService(server, docgen, config.server.api_key)
 
     service.start(config.server.host, config.server.port)
 
