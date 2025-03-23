@@ -3,10 +3,10 @@ import os
 from pydantic import BaseModel, EmailStr, PositiveInt, DirectoryPath
 
 
-
 class ServerConfig(BaseModel):
     host: str
     port: PositiveInt
+    api_key: str
 
 class AssetsConfig(BaseModel):
     templates_dir: DirectoryPath
@@ -29,4 +29,4 @@ class Config:
         if os.path.exists(self.path):
             with open(self.path, "r") as f:
                 return toml.load(f)
-        raise ValueError(".toml config file path does not exist")
+        raise FileNotFoundError(f"Config file {self.path} does not exist")

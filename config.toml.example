@@ -5,5 +5,5 @@ templates_dir = ""
 [server]
 host = "localhost"
 port = 8000
-
+api_key = ""
 

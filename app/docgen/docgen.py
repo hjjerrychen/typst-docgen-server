@@ -4,11 +4,11 @@ from docgen.typst import Typst
 
 class DocGen:
     def __init__(self, templates_dir: str, fonts_dir: list[str]):
-        if not os.path.exists(templates_dir):
-            raise ValueError(f"Templates directory '{templates_dir}' does not exist.")
+        if not os.path.isdir(templates_dir):
+            raise NotADirectoryError(f"Templates directory '{templates_dir}' does not exist.")
         for font_dir in fonts_dir:
-          if not os.path.exists(font_dir):
-              raise ValueError(f"Fonts directory '{font_dir}' does not exist.")
+          if not os.path.isdir(font_dir):
+              raise NotADirectoryError(f"Fonts directory '{font_dir}' does not exist.")
               # template resolver needs to chgeck more things 
         self.templates: dict[str, Template] = TemplateResolver(templates_dir).resolve()
         self.fonts_dir = fonts_dir
@@ -19,7 +19,7 @@ class DocGen:
       if not self.version_exists(template_id, version):
         raise ValueError(f"Version '{version}' does not exist for template '{template_id}'.")
       if not self.check_required_params(template_id, version, data):
-        raise ValueError(f"Required parameters for version '{version}' of template '{template_id}' are missing.")
+        raise TypeError(f"Required parameters for version '{version}' of template '{template_id}' are missing.")
 
       return Typst.render(self.templates[template_id].get_path(version), self.fonts_dir, data)
 
