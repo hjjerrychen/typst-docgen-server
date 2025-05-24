@@ -27,7 +27,7 @@ class Config:
 
     def _load_config(self) -> dict:
         for path in self.paths:
-            if os.path.exists(path):
+            if path and os.path.exists(path):
                 with open(path, "r") as f:
                     return toml.load(f)
         raise FileNotFoundError(f"Config file {self.paths} does not exist")
