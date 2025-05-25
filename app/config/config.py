@@ -23,7 +23,10 @@ class Config:
         self.config = self._load_config()
 
     def get_config(self) -> DocGenConfig:
-        return DocGenConfig.model_validate(self.config)
+        config = DocGenConfig.model_validate(self.config)
+        config.assets.templates_dir = os.path.abspath(config.assets.templates_dir)
+        config.assets.fonts_dir = [os.path.abspath(font_dir) for font_dir in config.assets.fonts_dir]
+        return config
 
     def _load_config(self) -> dict:
         for path in self.paths:
