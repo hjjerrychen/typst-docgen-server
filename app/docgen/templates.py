@@ -3,6 +3,7 @@ from enum import Enum
 import semantic_version as semver
 import os
 import toml
+import pprint
 
 
 @dataclass(frozen=True)
@@ -40,7 +41,7 @@ class TemplateResolver:
                 path=os.path.join(self.path, directory),
                 versions_required_params=versions_required_params,
             )
-      print("Detected templates:", templates)
+      print("Detected templates:", pprint.pformat(templates))
       return templates
 
     def _get_versions_required_params(self, dir: str) -> dict[str, list[str]]:
