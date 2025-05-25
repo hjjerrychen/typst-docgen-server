@@ -1,3 +1,4 @@
 #import "template/main.typ": example1
 
-#example1(sys.inputs.at("date"))
+#let data = json(bytes(sys.inputs.data))
+#example1(data.date)
