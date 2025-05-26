@@ -7,3 +7,13 @@ host = "localhost"
 port = 8000
 api_key = ""
 
+[metadata]
+author=""
+creator=""
+producer=""
+
+[signer]
+enabled=true
+private_key="private.key.pem"
+certificate_path="crt.pem"
+

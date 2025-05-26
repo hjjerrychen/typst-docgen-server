@@ -20,9 +20,6 @@ class Template:
     def has_version(self, version: str):
         return version in self.versions_required_params.keys()
 
-    def get_versions(self):
-          return self.entrypoint.keys()
-
     def get_required_params(self, version: str):
         return self.versions_required_params.get(version, [])
 
@@ -60,11 +57,14 @@ class TemplateResolver:
     def _get_template_directories(self) -> list[str]:
         return [dir for dir in os.listdir(self.path) if TemplateResolver._is_valid_dir(os.path.join(self.path, dir), dir)]
     
-    def _is_valid_version(full_path: str, version: str) -> bool:
+    @classmethod
+    def _is_valid_version(cls, full_path: str, version: str) -> bool:
         return TemplateResolver._is_valid_dir(full_path, version) and semver.validate(version)
 
-    def _is_valid_dir(full_path: str, dir: str) -> bool:
+    @classmethod
+    def _is_valid_dir(cls, full_path: str, dir: str) -> bool:
         return os.path.isdir(full_path) and not dir.startswith("_") and not dir.startswith(".")
 
-    def _get_enum_name(name: str) -> str:
+    @classmethod
+    def _get_enum_name(cls, name: str) -> str:
         return ''.join(filter(str.isalnum, name)).upper()

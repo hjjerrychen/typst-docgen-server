@@ -27,12 +27,12 @@ class DocGenService:
         return {"status": "ok",
                 "message": "This is an official website of the Government of Jerryville."}
 
-    async def render(self, template_id: str, version: str, body: RenderRequestBody, api_key: str = Depends(Auth.HEADER_PARSER)):
+    def render(self, template_id: str, version: str, body: RenderRequestBody, api_key: str = Depends(Auth.HEADER_PARSER)):
         request_id = str(uuid.uuid4())
         if not self.auth.verify_api_key(api_key):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
         try: 
-            data = self.docgen.generate(template_id, version, body.data)
+            data = self.docgen.generate(template_id, version, body.data, body.allow_print or False)
             headers = {'Content-Disposition': f'inline; filename="{request_id}.pdf"'}
             return Response(data, media_type='application/pdf', headers=headers)
         except (ValueError, TypeError) as e:
