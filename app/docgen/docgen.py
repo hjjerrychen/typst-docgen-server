@@ -3,6 +3,7 @@ import os
 import secrets
 
 from git import Optional
+from signer.pdf_signer import PDFSigner
 from docgen.utils import Version
 from docgen.templates import Template, TemplateResolver
 from docgen.typst import Typst
@@ -13,7 +14,7 @@ from pyhanko.sign import signers
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
 
 class DocGen:
-    def __init__(self, templates_dir: str, fonts_dir: list[str], signer: Optional[signers.PdfSigner], author: str, creator: str, producer: str):
+    def __init__(self, templates_dir: str, fonts_dir: list[str], signer: Optional[PDFSigner], author: str, creator: str, producer: str):
         if not os.path.isdir(templates_dir):
             raise NotADirectoryError(
                 f"Templates directory '{templates_dir}' does not exist."
@@ -64,7 +65,7 @@ class DocGen:
         pdf = self._set_metadata_security(pdf, allow_print, template_id, version, owner_pwd)
         if not self.signer:
             return pdf
-        return self._sign_document(pdf, owner_pwd)
+        return self.signer.sign(pdf, owner_pwd=owner_pwd)
 
     def _set_metadata_security(
         self, pdf: bytes, allow_print: bool, name: str, version: str, owner_pwd: str
@@ -95,16 +96,6 @@ class DocGen:
                 )
             )
             return output_stream.getvalue()
-        
-    def _sign_document(self, pdf: bytes, owner_pwd: str):
-        with BytesIO(pdf) as pdf_buffer:
-            w = IncrementalPdfFileWriter(pdf_buffer)
-            w.encrypt(user_pwd=owner_pwd)
-            out = signers.PdfSigner(
-                signers.PdfSignatureMetadata(field_name='Signature'),
-                signer=self.signer,
-            ).sign_pdf(w)
-            return out.read()
 
     def _template_id_exists(self, template_id: str):
         return template_id in self.templates
