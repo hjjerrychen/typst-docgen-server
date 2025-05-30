@@ -16,4 +16,5 @@ producer=""
 enabled=true
 private_key="private.key.pem"
 certificate_path="crt.pem"
+root_certificate_path="root.crt.pem"
 

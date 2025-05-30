@@ -21,6 +21,7 @@ class SignerConfig(BaseModel):
     enabled: bool
     private_key_path: str
     certificate_path: str
+    root_certificate_path: str
 
 class DocGenConfig(BaseModel):
     server: ServerConfig
@@ -40,6 +41,7 @@ class Config:
         config.assets.fonts_dir = [os.path.abspath(font_dir) for font_dir in config.assets.fonts_dir]
         config.signer.private_key_path = os.path.abspath(config.signer.private_key_path)
         config.signer.certificate_path = os.path.abspath(config.signer.certificate_path)
+        config.signer.root_certificate_path = os.path.abspath(config.signer.root_certificate_path)
         return config
 
     def _load_config(self) -> dict:

@@ -7,10 +7,10 @@ from pyhanko.keys import load_cert_from_pemder
 from pyhanko_certvalidator import ValidationContext
 from pyhanko.pdf_utils.reader import PdfFileReader
 from pyhanko.sign.validation import validate_pdf_signature
-
+from pyhanko.sign.validation.settings import KeyUsageConstraints
 class PDFSigner:
-    def __init__(self, private_key_path: str, certificate_path: str):
-        self.validation_context = ValidationContext(trust_roots=[load_cert_from_pemder(certificate_path)])
+    def __init__(self, private_key_path: str, certificate_path: str, root_certificate_path: str):
+        self.validation_context = ValidationContext(trust_roots=[load_cert_from_pemder(root_certificate_path)])
         self.signer = signers.SimpleSigner.load(private_key_path, certificate_path)
         if not self.signer:
             raise ValueError("Signer could not be initialized with the provided key and certificate.")
@@ -29,8 +29,7 @@ class PDFSigner:
     def verify(self, pdf: bytes) -> tuple[bool, str]:
         with BytesIO(pdf) as pdf_buffer:
             r = PdfFileReader(pdf_buffer)
-            # r.decrypt()
+            r.decrypt('')
             sig = r.embedded_signatures[0]
-            
             status = validate_pdf_signature(sig, self.validation_context)
             return status.bottom_line, status.pretty_print_details()

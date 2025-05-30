@@ -52,12 +52,13 @@ class DocGenService:
         
         try:
             pdf_data = file.file.read()
-            if not self.signer.verify(pdf_data):
-                return {"valid": False, "message": "Invalid PDF signature"}
+            result, message = self.signer.verify(pdf_data)
+            if not result:
+                return {"valid": False, "message": message}
             return {"valid": True, "message": "PDF signature is valid"}
         except Exception as e:
             print(f"Error verifying PDF: {e}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
+            return {"valid": False, "message": "PDF signature is invalid"}
 
     def start(self, host: str, port: int):
         uvicorn.run(self.server, host=host, port=port)
